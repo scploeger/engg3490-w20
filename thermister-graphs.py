@@ -7,25 +7,25 @@ import numpy.polynomial.polynomial as poly
 db = pd.read_csv("thermister-middle.csv", encoding = "ISO-8859-1")
 a=db.values
 time = a[:,0]
-thermister_value1 = a[:,1]
+thermistor_value1 = a[:,1]
 
 #read in window csv
 db = pd.read_csv("thermister-window.csv", encoding = "ISO-8859-1")
 b=db.values
 time = b[:,0]
-thermister_value2 = b[:,1]
+thermistor_value2 = b[:,1]
 
 #read in doorway csv
 db = pd.read_csv("thermister-dooraway.csv", encoding = "ISO-8859-1")
 c=db.values
 time = c[:,0]
-thermister_value3 = c[:,1]
+thermistor_value3 = c[:,1]
 
 #read in power supply fan csv
 db = pd.read_csv("thermister-fan.csv", encoding = "ISO-8859-1")
 d=db.values
 time = d[:,0]
-thermister_value4 = d[:,1]
+thermistor_value4 = d[:,1]
 
 
 
@@ -33,19 +33,19 @@ thermister_value4 = d[:,1]
 plt.figure(1)
 
 #title and axis labels
-plt.title('Thermister analogRead() Values from Middle of Room')
+plt.title('Thermistor analogRead() Values from Middle of Room')
 plt.xlabel("time [s]")
 plt.ylabel("analogRead() Value")
 
 #find std deviation
-std_dev = np.std(thermister_value1)
+std_dev = np.std(thermistor_value1)
 e = np.full((len(time), 1), std_dev)
 print(std_dev)
 
 #plot data
-plt.scatter(time,thermister_value1, label = "Thermister Data")
-plt.plot(time, [thermister_value1.mean()]*len(time), 'r', label = "Mean = {}".format(thermister_value1.mean()), linestyle = '--')
-plt.errorbar(time, thermister_value1, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
+plt.scatter(time,thermistor_value1, label = "Thermistor Data")
+plt.plot(time, [thermistor_value1.mean()]*len(time), 'r', label = "Mean = {}".format(thermistor_value1.mean()), linestyle = '--')
+plt.errorbar(time, thermistor_value1, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
 
 #add a legend
 plt.legend()
@@ -61,19 +61,19 @@ plt.show()
 plt.figure(2)
 
 #title and axis labels
-plt.title('Thermister analogRead() Values from near a Window')
+plt.title('Thermistor analogRead() Values from near a Window')
 plt.xlabel("time [s]")
 plt.ylabel("analogRead() Value")
 
 #find std deviation
-std_dev = np.std(thermister_value2)
+std_dev = np.std(thermistor_value2)
 e = np.full((len(time), 1), std_dev)
 print(std_dev)
 
 #plot data
-plt.scatter(time,thermister_value2, label = "Thermister Data")
-plt.plot(time, [thermister_value2.mean()]*len(time), 'r', label = "Mean = {}".format(thermister_value2.mean()), linestyle = '--')
-plt.errorbar(time, thermister_value2, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
+plt.scatter(time,thermistor_value2, label = "Thermistor Data")
+plt.plot(time, [thermistor_value2.mean()]*len(time), 'r', label = "Mean = {}".format(thermistor_value2.mean()), linestyle = '--')
+plt.errorbar(time, thermistor_value2, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
 
 #add a legend
 plt.legend()
@@ -89,19 +89,19 @@ plt.show()
 plt.figure(3)
 
 #title and axis labels
-plt.title('Thermister analogRead() Values from in a Doorway')
+plt.title('Thermistor analogRead() Values from in a Doorway')
 plt.xlabel("time [s]")
 plt.ylabel("analogRead() Value")
 
 #find std deviation
-std_dev = np.std(thermister_value3)
+std_dev = np.std(thermistor_value3)
 e = np.full((len(time), 1), std_dev)
 print(std_dev)
 
 #plot data
-plt.scatter(time,thermister_value3, label = "Thermister Data")
-plt.plot(time, [thermister_value3.mean()]*len(time), 'r', label = "Mean = {}".format(thermister_value3.mean()), linestyle = '--')
-plt.errorbar(time, thermister_value3, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
+plt.scatter(time,thermistor_value3, label = "Thermistor Data")
+plt.plot(time, [thermistor_value3.mean()]*len(time), 'r', label = "Mean = {}".format(thermistor_value3.mean()), linestyle = '--')
+plt.errorbar(time, thermistor_value3, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
 
 #add a legend
 plt.legend()
@@ -118,19 +118,19 @@ plt.show()
 plt.figure(4)
 
 #title and axis labels
-plt.title('Thermister analogRead() Values from in Front of a Power Supply Fan')
+plt.title('Thermistor analogRead() Values from in Front of a Power Supply Fan')
 plt.xlabel("time [s]")
 plt.ylabel("analogRead() Value")
 
 #find std deviation
-std_dev = np.std(thermister_value4)
+std_dev = np.std(thermistor_value4)
 e = np.full((len(time), 1), std_dev)
 print(std_dev)
 
 #plot data
-plt.scatter(time,thermister_value4, label = "Thermister Data")
-plt.plot(time, [thermister_value4.mean()]*len(time), 'r', label = "Mean = {}".format(thermister_value4.mean()), linestyle = '--')
-plt.errorbar(time, thermister_value4, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
+plt.scatter(time,thermistor_value4, label = "Thermistor Data")
+plt.plot(time, [thermistor_value4.mean()]*len(time), 'r', label = "Mean = {}".format(thermistor_value4.mean()), linestyle = '--')
+plt.errorbar(time, thermistor_value4, e, 0, 'k', label = "Standard Deviation = {}".format(std_dev), linestyle='None', marker='None')
 
 #add a legend
 plt.legend()

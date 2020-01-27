@@ -25,12 +25,12 @@ rangefinder_values = c[:,1]
 plt.figure(1)
 
 #title and axis labels
-plt.title('Step Response of Thermister When Submerged in Ice Water')
+plt.title('Step Response of Thermistor When Submerged in Ice Water')
 plt.xlabel("time [ms]")
 plt.ylabel("analogRead() Value")
 
 #plot raw data
-plt.scatter(time,sensor_values, label = "Thermister Data")
+plt.scatter(time,sensor_values, label = "Thermistor Data")
 
 #line of best fit 1
 coeffs1 = poly.polyfit(time, sensor_values, 1)
@@ -59,18 +59,18 @@ plt.show()
 plt.figure(2)
 
 #title and axis labels
-plt.title('Thermister Temperature Response Curve')
-plt.xlabel("Measured Temperature [*C]")
-plt.ylabel("analogRead() Value")
+plt.title('Thermistor Temperature Response Curve')
+plt.ylabel("Measured Temperature [*C]")
+plt.xlabel("analogRead() Value")
 
 #plot raw data
-plt.scatter(deg_c,analog_value, label = "Sensor Data")
+plt.scatter(analog_value, deg_c, label = "Sensor Data")
 
 #line of best fit 3
-coeffs3 = poly.polyfit(deg_c, analog_value, 3)
-ffit = poly.polyval(deg_c, coeffs3)
-plt.plot(deg_c, ffit, 'm', label = '3rd Degree Polynomial Fit')
-print(coeffs3)
+coeffs3 = poly.polyfit(analog_value, deg_c, 3)
+ffit = poly.polyval(analog_value, coeffs3)
+plt.plot(analog_value, ffit, 'm', label = '3rd Degree Polynomial Fit')
+print("polynomial fit: ", coeffs3)
 
 #add a legend
 plt.legend()
