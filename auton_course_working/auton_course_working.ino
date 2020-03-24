@@ -1,3 +1,20 @@
+/* Final Robot Code
+   For: ENGG*3490, Final Project
+   Winter 2020
+
+   By: Spencer Ploeger (0969141)
+
+   On behalf of group:
+   Matthew Bolan (0962361)
+   Iain Bulmer (0957153)
+   Devin Catt (0922742)
+   Lucas Dasovic (0963516)
+   Jacob Highgate (0981246)
+
+   Last Modified: March 24, 2020
+
+   About: This is the code that autonomously controls the robot.
+*/
 #include <Servo.h> //include servo library
 
 #define START_POS 90 //servo starting pos
@@ -35,12 +52,11 @@ unsigned long time_1 = 0;
 
 //servo position and direction global variable
 int pos = START_POS; //initial position
-int servo_dir = 'r'; //the servo will be initialized all the way left and will be moving right
+int servo_dir = 'r'; //the servo will be initialized to 'START_POS' and will begin moving right
 
-int dist[] = {15, 15, 15, 15, 15, 15, 15};
+int dist[] = {15, 15, 15, 15, 15, 15, 15}; //initialize all the distanced to 15 inches
 
 void setup() {
-  //Serial.begin(9600);
 
   //servo setup
   myservo.attach(3);  // attaches the servo on pin 3 to the servo object
@@ -65,37 +81,21 @@ void setup() {
   pinMode(pwmD1, OUTPUT);
   pinMode(pwmD2, OUTPUT);
 
+  //start button. wait until button pushed to leave setup loop
   while (digitalRead(button) == LOW) {
     delay(50);
   }
   delay(100);
-
 }
 
 void loop() {
-  //  go('f', 100);
-  //  delay(1000);
-  //  halt();
-  //  delay(500);
-  //  go('b', 100);
-  //  delay(1000);
-  //  halt();
-  //  delay(500);
-  //  go('l', 100);
-  //  delay(1000);
-  //  halt();
-  //  delay(500);
-  //  go('r', 100);
-  //  delay(1000);
-  //  halt();
-  //  delay(500);
 
   if (millis() - servo_tmr > servo_int) { //move the servo and record position
     servo_tmr = millis();
     myservo.write(move_servo());
 
+    //get distance from sensor and place in correct distance array element
     if (pos == 34) {
-      ////Serial.println("at 34");
       dist[0] = getDist();
     }
     else if (pos == 46) {
@@ -114,40 +114,28 @@ void loop() {
       dist[5] = getDist();
     }
     else if (pos == 146) {
-      ////Serial.println("at 146");
       dist[6] = getDist();
     }
-    ////Serial.print("dist 6: ");
-    ////Serial.println(dist[6]);
-
-    //  //Serial.print(dist[0]);
-    //  //Serial.print(",");
-    //  //Serial.print(dist[1]);
-    //  //Serial.print(",");
-    //  //Serial.print(dist[2]);
-    //  //Serial.print(",");
-    //  //Serial.print(dist[3]);
-    //  //Serial.print(",");
-    //  //Serial.println(dist[4]);
   }
 
-  if (dist[6] < 4) { //if right is about to hit, steer left fast
+  //****Main control loop****
+  if (dist[6] < 4) { //if farthest right is about to hit, steer left fast
     timer_1 = millis();
     while (millis() - timer_1 < 200) { //left fast for 200ms
       go("l", FST_SPD);
     }
   }
-  else if (dist[0] < 4) { //if left is about to hit, steer right fast
+  else if (dist[0] < 4) { //if farthest left is about to hit, steer right fast
     timer_1 = millis();
     while (millis() - timer_1 < 200) { //right fast for 200ms
       go("r", FST_SPD);
     }
   }
-  else if (dist[2] < 6 && dist[0] > 9) { //if centre < 5" but left is clear, strafe left
+  else if (dist[2] < 6 && dist[0] > 9) { //if centre < 6" but left is clear, strafe left
     //strafe left
     go("sl", DRV_SPD);
   }
-  else if (dist[2] < 6 && dist[6] > 9) { //if centre < 5" but right is clear, strafe right
+  else if (dist[2] < 6 && dist[6] > 9) { //if centre < 6" but right is clear, strafe right
     //strafe right
     go("sr", DRV_SPD);
   }
@@ -176,9 +164,9 @@ void loop() {
     }
     pos = 90; //check to see if conflcit resolved
     myservo.write(pos);//set servo back to 90
-    dist[3] = getDist();
+    dist[3] = getDist();//update centre distance
   }
-  else {
+  else { //if not obstacles present, go forward
     go("f", DRV_SPD);
   }
 
@@ -186,7 +174,7 @@ void loop() {
 }
 /*
    function: go
-   parameters: char dir (desired direction to move), int spd (pwm value 0-255) desired speed
+   parameters: char* dir (desired direction to move), int spd (pwm value 0-255) desired speed
    return: none
    brief: moves robot in desired direction at desired speed
 */
@@ -297,77 +285,70 @@ void halt() {
 }
 
 /*
-   46 = dist[0]
-   68 = dist[1]
-   90 = dist[2]
-   112 = dist[3]
-   134 = dist [4]
+   function: move_servo()
+   parameters: none
+   return: none
+   brief: adjust pos variable (servo position) sequentially, allowing the servo to 'sweep'
 */
 int move_servo() {
   if (pos == 34) {
     servo_dir = 'r';
     pos = 46;
-    //Serial.println("1");
     return 46;
   }
   else if (pos == 46 && servo_dir == 'r') {
     pos = 68;
-    //Serial.println("2");
     return 68;
   }
   else if (pos == 68 && servo_dir == 'r') {
     pos = 90;
-    //Serial.println("3");
     return 90;
   }
   else if (pos == 90 && servo_dir == 'r') {
     pos = 112;
-    //Serial.println("4");
     return 112;
   }
   else if (pos == 112 && servo_dir == 'r') {
     pos = 134;
-    //Serial.println("5");
     return 134;
   }
   else if (pos == 134 && servo_dir == 'r') {
     servo_dir = 'l';
     pos = 146;
-    //Serial.println("6");
     return 146;
   }
   else if (pos == 146) {
     pos = 134;
-    //Serial.println("7");
     return 134;
   }
   else if (pos == 134 && servo_dir == 'l') {
     pos = 112;
-    //Serial.println("8");
     return 112;
   }
   else if (pos == 112 && servo_dir == 'l') {
     pos = 90;
-    //Serial.println("9");
     return 90;
   }
   else if (pos == 90 && servo_dir == 'l') {
     pos = 68;
-    //Serial.println("10");
     return 68;
   }
   else if (pos == 68 && servo_dir == 'l') {
     pos = 46;
-    //Serial.println("11");
     return 46;
   }
   else if (pos == 46 && servo_dir == 'l') {
     pos = 34;
-    //Serial.println("12");
     return 34;
   }
 }
 
+/*
+   function: getDist
+   parameters: none
+   return: double (distance in inches)
+   brief: calculates distance from rangefinder value based off of second degree interpolation function
+*/
 double getDist()
 {
   float val = 0; //calculated distance
@@ -383,7 +364,7 @@ double getDist()
   else if (val < 173) { //if above max range, return max range
     return 15;
   }
-  else { //if in range, calulate distance
+  else { //if in range, calulate distance based on interpolation function
     double distance = ((9E-05 * pow(val, 2)) + (-0.0911 * val) + 27.407);
     return distance;
   }
