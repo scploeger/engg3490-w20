@@ -1,5 +1,8 @@
 #include <Servo.h> //include servo library
 
+#define START_POS 90
+#define DRV_SPD 100
+
 //pins for motor control
 #define pwmA1 6 //back left
 #define pwmA2 7
@@ -30,7 +33,7 @@ unsigned long servo_tmr = 0;
 unsigned long time_1 = 0;
 
 //servo position and direction global variable
-int pos = 46; //initial position is all the way left
+int pos = START_POS; //initial position
 int servo_dir = 'r'; //the servo will be initialized all the way left and will be moving right
 
 int dist[] = {15, 15, 15, 15, 15};
@@ -40,7 +43,7 @@ void setup() {
 
   //servo setup
   myservo.attach(3);  // attaches the servo on pin 3 to the servo object
-  myservo.write(46); //set the servo to leftmost position, it will start moving right
+  myservo.write(START_POS); //set the servo to center position, it will start moving right
 
   //pinmode for button
   pinMode(button, INPUT);
@@ -106,26 +109,34 @@ void loop() {
     }
   }
 
-    if (dist[0] < 7 || dist[1] < 7) { //if either of the two left positions sense obstacle < 12" away
-      //go right
-      go('r', 70);
+  if (dist[2] < 10 && dist[0] > 9) { //if centre < 10" but left is clear, strafe left
+    //strafe left
+    go("sl", DRV_SPD);
+  }
+  else if (dist[2] < 9 && dist[5] > 9) { //if centre < 10" but right is clear, strafe right
+    //strafe right
+    go("sr", DRV_SPD);
+  }
+  else if (dist[0] < 8 || dist[1] < 8) { //if either of the two left positions sense obstacle < 12" away
+    //go right
+    go("r", DRV_SPD);
+  }
+  else if (dist[4] < 8 || dist[3] < 8) { //if either of the two right positions sense obstacle < 12" away
+    //go left
+    go("l", DRV_SPD);
+  }
+  else if (dist[3] < 8) { //if either of the two right positions sense obstacle < 12" away
+    timer_1 = millis();
+    while (millis() - timer_1 < 500) {
+      go("b", DRV_SPD);
     }
-    else if (dist[4] < 7 || dist[3] < 7) { //if either of the two right positions sense obstacle < 12" away
-      //go left
-      go('l', 70);
+    while (millis() - timer_1 < 700) {
+      go("l", DRV_SPD);
     }
-    else if (dist[3] < 8) { //if either of the two right positions sense obstacle < 12" away
-      timer_1 = millis();
-      while(millis() - timer_1 < 500){
-        go('b', 100);
-      }
-      while(millis() - timer_1 < 700){
-        go('l', 70);
-      }
-    }
-    else {
-      go('f', 70);
-    }
+  }
+  else {
+    go("f", DRV_SPD);
+  }
 
   Serial.print(dist[0]);
   Serial.print(",");
@@ -143,8 +154,8 @@ void loop() {
    return: none
    brief: moves robot in desired direction at desired speed
 */
-void go(char dir, int spd) {
-  if (dir == 'f') {
+void go(char *dir, int spd) {
+  if (dir == "f") {
     analogWrite(pwmB1, 0); //front left fwd
     analogWrite(pwmB2, spd);
 
@@ -158,7 +169,7 @@ void go(char dir, int spd) {
     analogWrite(pwmD2, spd);
   }
 
-  if (dir == 'b') {
+  if (dir == "b") {
     analogWrite(pwmB1, spd); //front left bwd
     analogWrite(pwmB2, 0);
 
@@ -172,7 +183,7 @@ void go(char dir, int spd) {
     analogWrite(pwmD2, 0);
   }
 
-  if (dir == 'l') {
+  if (dir == "l") {
     analogWrite(pwmB1, spd); //front left bwd
     analogWrite(pwmB2, 0);
 
@@ -186,7 +197,7 @@ void go(char dir, int spd) {
     analogWrite(pwmD2, spd);
   }
 
-  if (dir == 'r') {
+  if (dir == "r") {
     analogWrite(pwmB1, 0); //front left fwd
     analogWrite(pwmB2, spd);
 
@@ -198,6 +209,34 @@ void go(char dir, int spd) {
 
     analogWrite(pwmD1, spd); //front right bwd
     analogWrite(pwmD2, 0);
+  }
+
+  if (dir == "sr") { //strafe right
+    analogWrite(pwmB1, 0); //front left fwd
+    analogWrite(pwmB2, spd);
+
+    analogWrite(pwmC1, 0); //back right fwd
+    analogWrite(pwmC2, spd);
+
+    analogWrite(pwmA1, spd); //back left bwd
+    analogWrite(pwmA2, 0);
+
+    analogWrite(pwmD1, spd); //front right bwd
+    analogWrite(pwmD2, 0);
+  }
+
+  if (dir == "sl") { //strafe left
+    analogWrite(pwmB1, spd); //front left bwd
+    analogWrite(pwmB2, 0);
+
+    analogWrite(pwmC1, spd); //back right bwd
+    analogWrite(pwmC2, 0);
+
+    analogWrite(pwmA1, 0); //back left fwd
+    analogWrite(pwmA2, spd);
+
+    analogWrite(pwmD1, 0); //front right fwd
+    analogWrite(pwmD2, spd);
   }
 }
 
