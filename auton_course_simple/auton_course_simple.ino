@@ -13,15 +13,18 @@
 
    Last Modified: March 28, 2020
 
-   About: This is a simpler versio of the code that autonomously controls the robot.
+   About: This is a simpler version of the original code that autonomously controls the robot.
+          This revision is what was used to take the videos posted to youtube and works well.
+          In practice, it should allow the robot to make it through the maze.
 */
 #include <Servo.h> //include servo library
 
-#define START_POS 90 //servo starting pos
-#define DRV_SPD 80 //drive speed
-#define FST_SPD 100 //fast speed 
+#define START_POS 90 //servo starting pos (in degrees)
+#define DRV_SPD 80 //drive speed (PWM value 0-255)
+#define FST_SPD 100 //fast speed  (PWM value 0-255)
 
-//pins for motor control
+//digital pins for motor control
+//these pins connect to PWM+/- pins on the L293 IC
 #define pwmA1 6 //back left
 #define pwmA2 7
 
@@ -43,21 +46,21 @@
 Servo myservo;  // create servo object to control a servo
 
 //timing periods
-int servo_int = 20;
-int timer_1 = 100;
+int servo_int = 20; //how often the servo changes position
+int timer_1 = 100; //timer used multiple times throughout the code
 
-//timers
-unsigned long servo_tmr = 0;
-unsigned long time_1 = 0;
+//timers used to timer different events during execution of code
+unsigned long servo_tmr = 0; //used for timing servo position
+unsigned long time_1 = 0; //used to time robot movements
 
 //servo position and direction global variable
 int pos = START_POS; //initial position
 int servo_dir = 'r'; //the servo will be initialized to 'START_POS' and will begin moving right
 
-int dist[] = {15, 15, 15, 15, 15, 15, 15}; //initialize all the distanced to 15 inches
+int dist[] = {15, 15, 15, 15, 15, 15, 15}; //initialize all the distances in distance array to 15 inches
 
 //timer_on initialization
-int timer_on[] = {0, 0, 0, 0, 0, 0};
+int timer_on[] = {0, 0, 0, 0, 0, 0}; //initialize all "timer on" array elements
 
 void setup() {
   //servo setup
@@ -88,7 +91,7 @@ void setup() {
     delay(50);
   }
   delay(100);
-  go("f", DRV_SPD);
+  go("f", DRV_SPD); //start robot going forward
 }
 
 void loop() {
@@ -98,10 +101,11 @@ void loop() {
     myservo.write(move_servo());
 
     //get distance from sensor and place in correct distance array element
+    //based on where the servo is, get the distance from rangefinder and add to correct array element
     if (pos == 34) {
       dist[0] = getDist();
-      timer_on[0] = 1;
-    }
+      timer_on[0] = 1; //used to know what measurement was taken most recently
+    }                  //current servo position will be 1, rest will be 0 (used below)
     else if (pos == 46) {
       dist[1] = getDist();
       timer_on[1] = 1;
@@ -130,8 +134,8 @@ void loop() {
 
   //****Main control loop****
 
-  if (dist[6] < 12 || dist[0] < 12 || dist[5] < 12 || dist[1] < 12) { //if far left or right distances < 12" away
-    if (dist[6] < 12 && timer_on[6] == 1) { //if far right distance < 12" AND the servo is current pointing in correct direction
+  if (dist[6] < 12 || dist[0] < 12 || dist[5] < 12 || dist[1] < 12) { //if farthest left or right distances < 12" away
+    if (dist[6] < 12 && timer_on[6] == 1) { //if farthest right distance < 12" AND the servo is current pointing in correct direction
       timer_1 = millis();
       go("l", FST_SPD); //turn left
       timer_on[6] = 0;
