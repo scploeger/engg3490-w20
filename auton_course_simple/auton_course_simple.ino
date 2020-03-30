@@ -176,7 +176,7 @@ void loop() {
     }
   }
   //block 3
-  if (dist[3] < 13) { //if fwd distance < 13"
+  if (dist[3] < 13) {//if fwd distance < 13"
     if (dist[3] < 13 && timer_on[3] == 1) { //if fwd distance < 13" AND the servo is current pointing in correct direction
       timer_1 = millis(); //start the timer
       go("b", FST_SPD); //reverse
@@ -278,26 +278,6 @@ void go(char *dir, int spd) {
     analogWrite(pwmD1, 0); //front right fwd
     analogWrite(pwmD2, spd);
   }
-}
-
-/*
-   function: halt()
-   parameters: none
-   return: none
-   brief: stops the robot moving by stopping all motors
-*/
-void halt() {
-  analogWrite(pwmB1, 0); //front left stop
-  analogWrite(pwmB2, 0);
-
-  analogWrite(pwmC1, 0); //back right stop
-  analogWrite(pwmC2, 0);
-
-  analogWrite(pwmA1, 0); //back left stop
-  analogWrite(pwmA2, 0);
-
-  analogWrite(pwmD1, 0); //front right stop
-  analogWrite(pwmD2, 0);
 }
 
 /*
