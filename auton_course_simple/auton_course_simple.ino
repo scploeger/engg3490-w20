@@ -150,7 +150,7 @@ void loop() {
       go("l", FST_SPD);
       timer_on[5] = 0;
     }
-    if (dist[1] < 12 && timer_on[1] == 1) { 
+    else if (dist[1] < 12 && timer_on[1] == 1) { 
       timer_1 = millis();
       go("r", FST_SPD);
       timer_on[1] = 0;
