@@ -133,7 +133,7 @@ void loop() {
   }
 
   //****Main control loop****
-
+  //block 1
   if (dist[6] < 12 || dist[0] < 12 || dist[5] < 12 || dist[1] < 12) { //if farthest left or right distances < 12" away
     if (dist[6] < 12 && timer_on[6] == 1) { //if farthest right distance < 12" AND the servo is current pointing in correct direction
       timer_1 = millis();
@@ -159,7 +159,7 @@ void loop() {
       go("f", DRV_SPD);
     }
   }
-
+  //block 2
   if (dist[4] < 12 || dist[2] < 12) { //if middle lefr or right distance 12"
     if (dist[4] < 12 && timer_on[4] == 1) { //if middle right distance < 12" AND the servo is current pointing in correct direction
       timer_1 = millis();
@@ -175,7 +175,7 @@ void loop() {
       go("f", DRV_SPD);
     }
   }
-
+  //block 3
   if (dist[3] < 13) { //if fwd distance < 13"
     if (dist[3] < 13 && timer_on[3] == 1) { //if fwd distance < 13" AND the servo is current pointing in correct direction
       timer_1 = millis(); //start the timer
